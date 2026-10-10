@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>E82 Office</title>
+<style>
+  :root {
+    --paper: #f6f4ef; --bone: #eeebe3; --ink: #16130f; --muted: #5f574d; --hair: #d9d3c7;
+    --amber: #e08529; --amber-ink: #9d540c; --soft: #fbeedd; --ok: #2f7a4f; --warn: #a3471f;
+    --raise: 0 1px 0 #fff inset, 0 1px 2px rgba(22,19,15,.08), 0 6px 16px rgba(22,19,15,.06);
+    --sink: inset 0 1px 3px rgba(22,19,15,.12), inset 0 -1px 0 #fff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --paper: #121010; --bone: #1b1816; --ink: #f2ede4; --muted: #b3a999; --hair: #332e29;
+      --amber-ink: #f0a457; --soft: #2a2017; --ok: #6fc796; --warn: #f08a5d;
+      --raise: 0 1px 0 rgba(255,255,255,.04) inset, 0 6px 16px rgba(0,0,0,.4);
+      --sink: inset 0 1px 3px rgba(0,0,0,.5); }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 1180px; margin: 0 auto; padding: 24px 16px 48px; display: grid; gap: 20px; }
+  header { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px; }
+  h1 { margin: 0; font-size: 28px; letter-spacing: -.01em; }
+  h2 { margin: 0 0 12px; font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); display: flex; align-items: center; gap: 8px; }
+  .led { width: 8px; height: 8px; border-radius: 50%; background: var(--amber); box-shadow: 0 0 6px var(--amber); }
+  .panel { background: var(--bone); border: 1px solid var(--hair); border-radius: 14px; padding: 16px; box-shadow: var(--raise); }
+  .well { background: var(--paper); border-radius: 10px; padding: 12px; box-shadow: var(--sink); }
+  .grid { display: grid; gap: 12px; }
+  .agents { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+  .cols { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  @media (max-width: 760px) { .cols { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 480px) { .cols { grid-template-columns: 1fr; } }
+  .num { font-variant-numeric: tabular-nums; font-weight: 600; }
+  .muted { color: var(--muted); font-size: 13px; }
+  .stat { display: flex; gap: 18px; flex-wrap: wrap; }
+  .stat div { min-width: 120px; }
+  .stat .num { font-size: 22px; display: block; }
+  ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  li.card { background: var(--paper); border: 1px solid var(--hair); border-radius: 10px; padding: 10px; }
+  .ask { border-left: 3px solid var(--amber); background: var(--soft); }
+  .row { display: flex; gap: 8px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+  button { font: inherit; font-size: 13px; padding: 6px 12px; border-radius: 8px; border: 1px solid var(--hair);
+    background: var(--paper); color: var(--ink); cursor: pointer; box-shadow: var(--raise); }
+  button:active { transform: translateY(1px); box-shadow: var(--sink); }
+  button.primary { background: var(--amber); color: #16130f; border-color: var(--amber); }
+  .pill { font-size: 12px; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--hair); }
+  .pass { color: var(--ok); } .fail { color: var(--warn); }
+  pre { white-space: pre-wrap; word-break: break-word; margin: 0; font: 13px/1.5 ui-monospace, Menlo, monospace; max-height: 60vh; overflow: auto; }
+  dialog { border: 1px solid var(--hair); border-radius: 14px; background: var(--bone); color: var(--ink); width: min(760px, calc(100vw - 32px)); padding: 16px; }
+  dialog::backdrop { background: rgba(22,19,15,.4); }
+  code { font-size: 12.5px; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div>
+      <div class="muted">E82 Studios · Munder Difflin floor</div>
+      <h1>The office</h1>
+    </div>
+    <div class="stat panel" id="totals"></div>
+  </header>
+
+  <section class="panel">
+    <h2><span class="led"></span>Ready for you (Dwight passed these)</h2>
+    <ul id="ready"></ul>
+  </section>
+
+  <section class="panel">
+    <h2>Agents</h2>
+    <div class="grid agents" id="agents"></div>
+  </section>
+
+  <section class="panel">
+    <h2>Task board</h2>
+    <div class="grid cols" id="board"></div>
+  </section>
+
+  <section class="grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));">
+    <div class="panel"><h2>Needs work</h2><ul id="needs"></ul></div>
+    <div class="panel"><h2>Waiting for review</h2><ul id="waiting"></ul></div>
+    <div class="panel"><h2>Approved by you</h2><ul id="approved"></ul></div>
+  </section>
+
+  <p class="muted">Reads files on this floor every 5 seconds; spends no tokens. Approving moves a draft into
+  <code>approved/</code>. Nothing is sent: you send it yourself.</p>
+</main>
+
+<dialog id="viewer">
+  <div class="row"><strong id="vtitle"></strong><button data-act="close">Close</button></div>
+  <div class="well" style="margin-top:12px"><pre id="vbody"></pre></div>
+</dialog>
+
+<script>
+  const TOKEN = '__TOKEN__';
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const fmt = (n) => n >= 1e6 ? (n / 1e6).toFixed(1) + 'M' : n >= 1e3 ? Math.round(n / 1e3) + 'k' : String(n);
+  const ago = (s) => s == null ? 'not started' : s < 60 ? 'active now' : s < 3600 ? Math.round(s / 60) + ' min ago' : Math.round(s / 3600) + ' h ago';
+
+  async function view(area, path) {
+    const r = await fetch(`/api/file?area=${area}&path=${encodeURIComponent(path)}`);
+    $('vtitle').textContent = `${area}/${path}`;
+    $('vbody').textContent = r.ok ? await r.text() : 'Not found';
+    $('viewer').showModal();
+  }
+  async function approve(path) {
+    const r = await fetch('/api/approve', { method: 'POST', headers: { 'content-type': 'application/json', 'x-office-token': TOKEN }, body: JSON.stringify({ path }) });
+    if (!r.ok) alert((await r.json()).error);
+    load();
+  }
+
+  const btn = (act, area, path, label, cls = '') =>
+    `<button class="${cls}" data-act="${act}" data-area="${area}" data-path="${esc(path)}">${label}</button>`;
+  document.addEventListener('click', (e) => {
+    const b = e.target.closest('button[data-act]');
+    if (!b) return;
+    if (b.dataset.act === 'close') $('viewer').close();
+    else if (b.dataset.act === 'view') view(b.dataset.area, b.dataset.path);
+    else if (b.dataset.act === 'approve') approve(b.dataset.path);
+  });
+
+  function draftItem(d, actions) {
+    return `<li class="card"><div class="row"><span>${esc(d.path)}</span><span class="row">${actions}</span></div></li>`;
+  }
+
+  async function load() {
+    let s;
+    try { s = await (await fetch('/api/state')).json(); } catch { return; }
+    $('totals').innerHTML = `<div><span class="num">${fmt(s.totals.tokens)}</span><span class="muted">tokens so far</span></div>
+      <div><span class="num">$${s.totals.usd.toFixed(2)}</span><span class="muted">cost at API prices</span></div>
+      <div><span class="num">${s.ready.length}</span><span class="muted">waiting for you</span></div>`;
+    $('ready').innerHTML = s.ready.length ? s.ready.map((d) => draftItem(d,
+      btn('view', 'drafts', d.path, 'Open') + btn('view', 'reviews', d.path, 'Review') + btn('approve', 'drafts', d.path, 'Approve', 'primary'))).join('')
+      : '<li class="muted">Nothing yet. Drafts appear here once Dwight passes them.</li>';
+    $('agents').innerHTML = s.agents.length ? s.agents.map((a) => `<div class="well">
+      <div class="row"><strong>${esc(a.name)}</strong><span class="pill">${a.onHold ? 'on hold' : a.breaker && a.breaker !== 'healthy' ? esc(a.breaker) : ago(a.lastActiveSecAgo)}</span></div>
+      <div class="muted">${esc(a.role)}</div>
+      <div class="row" style="margin-top:6px"><span><span class="num">${fmt(a.tokens)}</span> <span class="muted">tokens</span></span><span class="muted">${a.cap ? 'cap ' + fmt(a.cap) + ' work' : ''}</span></div>
+      <div class="muted">${a.inbox ? a.inbox + ' in inbox · ' : ''}${a.lastTool ? 'last: ' + esc(a.lastTool) : ''}</div>
+    </div>`).join('') : '<div class="muted">Open the floor in Munder Difflin to see agents here.</div>';
+    const who = (id) => id === 'god' ? 'Michael' : s.agents.find((a) => a.id === id)?.name ?? id ?? 'founder';
+    const cols = [['todo', 'To do'], ['doing', 'Doing'], ['blocked', 'Needs you / blocked'], ['done', 'Done']];
+    $('board').innerHTML = cols.map(([k, label]) => `<div class="well"><h2>${label} · ${s.tasks[k].length}</h2><ul>${
+      s.tasks[k].map((t) => `<li class="card ${t.ask ? 'ask' : ''}"><div><strong>${esc(t.id)}</strong> ${esc(t.title)}</div>
+        <div class="muted">${esc(who(t.assignee))}${t.ask ? ' · question for you on the floor\'s Ask me board' : ''}</div></li>`).join('')}</ul></div>`).join('');
+    $('needs').innerHTML = s.needsWork.map((d) => draftItem(d, btn('view', 'reviews', d.path, 'Why'))).join('') || '<li class="muted">None</li>';
+    $('waiting').innerHTML = s.waiting.map((d) => draftItem(d, btn('view', 'drafts', d.path, 'Open'))).join('') || '<li class="muted">None</li>';
+    $('approved').innerHTML = s.approved.map((p) => draftItem({ path: p }, btn('view', 'approved', p, 'Open'))).join('') || '<li class="muted">None</li>';
+  }
+  load();
+  setInterval(load, 5000);
+</script>
+</body>
+</html>
