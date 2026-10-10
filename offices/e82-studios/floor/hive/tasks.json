@@ -1,0 +1,106 @@
+{
+  "tasks": [
+    {
+      "id": "E82-1",
+      "title": "Research 10 prospects for niche validation",
+      "description": "OBJECTIVE: evidence for open decision #1 (niche). Find 5 Indian D2C e-commerce brands (niche A) and 5 Indian multi-location clinics (niche B) with a public website, using web search. OUTPUT: one drafts/outreach/<slug>.md per company (## Processes, ## Opener) plus drafts/outreach/_niche-notes.md: per niche, which processes kept coming up, in under 120 words. BOUNDARIES: playbook steps 1 and 3; drafts only; homepage plus one page per company; one session. DONE: check-draft passes on every file and Michael has one done message.",
+      "status": "todo",
+      "dependsOn": [],
+      "priority": 1,
+      "createdAt": "2026-10-10T09:00:00.000Z",
+      "assignee": "phyllis"
+    },
+    {
+      "id": "E82-2",
+      "title": "Review the 10 prospect drafts",
+      "description": "Review every drafts/outreach/*.md from E82-1 per your goal. One reviews/outreach/<slug>.md each. Send Michael the count of PASS and NEEDS WORK.",
+      "status": "todo",
+      "dependsOn": [
+        "E82-1"
+      ],
+      "priority": 1,
+      "createdAt": "2026-10-10T09:00:00.000Z",
+      "assignee": "dwight"
+    },
+    {
+      "id": "E82-3",
+      "title": "Founder: pick the niche (open decision #1)",
+      "description": "After E82-2, Michael summarises drafts/outreach/_niche-notes.md and the review counts into one ask. The answer goes in the decisions log (founder edits operating-context.md or tells Michael yes).",
+      "status": "blocked",
+      "dependsOn": [
+        "E82-2"
+      ],
+      "priority": 1,
+      "createdAt": "2026-10-10T09:00:00.000Z",
+      "humanQA": [
+        {
+          "q": "**Pick the niche for this quarter (open decision #1).**\n\n- A: D2C e-commerce (India)\n- B: multi-location clinics (India)\n\nEvidence: `drafts/outreach/_niche-notes.md` and `reviews/outreach/` once E82-2 is done.",
+          "askedAt": "2026-10-10T09:00:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "E82-4",
+      "title": "Draft the discovery-call agenda for both niches",
+      "description": "OBJECTIVE: be ready the day a call is booked. OUTPUT: drafts/sales/_templates/discovery-agenda-a.md and -b.md: one page each, 40 minutes, the three questions that decide the deal, what we must learn about their current process and its cost in their own figures. INPUT: n8n-e82Agents/agency/AUDIT.md (grep the interview section) and BRIEF.md. BOUNDARIES: playbook step 4; no prices; one session.",
+      "status": "todo",
+      "dependsOn": [],
+      "priority": 2,
+      "createdAt": "2026-10-10T09:00:00.000Z",
+      "assignee": "jim"
+    },
+    {
+      "id": "E82-5",
+      "title": "Review the discovery agendas",
+      "description": "Review both agendas from E82-4. reviews/sales/_templates/<file>.md each.",
+      "status": "todo",
+      "dependsOn": [
+        "E82-4"
+      ],
+      "priority": 2,
+      "createdAt": "2026-10-10T09:00:00.000Z",
+      "assignee": "dwight"
+    },
+    {
+      "id": "E82-6",
+      "title": "Founder: choose Ryan's first build",
+      "description": "Ryan builds nothing until the founder picks one item from the YES list.",
+      "status": "blocked",
+      "dependsOn": [],
+      "priority": 2,
+      "createdAt": "2026-10-10T09:00:00.000Z",
+      "assignee": "ryan",
+      "humanQA": [
+        {
+          "q": "**Which back-office build should Ryan do first?**\n\n1. Scorecard: the Friday numbers filled from the Data Tables, so the close takes minutes\n2. Error alerts: workflow errors reach you by email (needs a Gmail credential from you)\n3. Prospect research workflow: the n8n version of Phyllis, publishable once gateway credits are topped up\n\nReply with a number, or \"none yet\".",
+          "askedAt": "2026-10-10T09:00:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "E82-7",
+      "title": "Draft this week's brief",
+      "description": "Michael: drafts/ops/weekly-brief-2026-10-12.md from n8n-e82Agents/operating/weekly-brief-template.md, with E82-1 to E82-8 as the week's work.",
+      "status": "todo",
+      "dependsOn": [],
+      "priority": 2,
+      "createdAt": "2026-10-10T09:00:00.000Z",
+      "assignee": "god"
+    },
+    {
+      "id": "E82-8",
+      "title": "Founder: set the audit price (open decision #3)",
+      "description": "Needed before Jim writes a real proposal and for the day-30 goal \"offer priced\".",
+      "status": "blocked",
+      "dependsOn": [],
+      "priority": 3,
+      "createdAt": "2026-10-10T09:00:00.000Z",
+      "humanQA": [
+        {
+          "q": "**Set the audit price in rupees (open decision #3).**\n\nPlaybook band: `₹60k–₹1.5L`. Pick one number and say whether the site shows it.",
+          "askedAt": "2026-10-10T09:00:00.000Z"
+        }
+      ]
+    }
+  ]
+}
